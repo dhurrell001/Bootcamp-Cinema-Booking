@@ -5,6 +5,7 @@ def ClearScreen():
     # Clearing the Screen
     os.system('cls')
 print('hi')
+i =1 
 #======================= Cinema classes ===================
 
 class ScreenSeating:
