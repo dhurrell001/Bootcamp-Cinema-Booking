@@ -4,6 +4,7 @@ import time
 def ClearScreen():
     # Clearing the Screen
     os.system('cls')
+print('hi')
 #======================= Cinema classes ===================
 
 class ScreenSeating:
