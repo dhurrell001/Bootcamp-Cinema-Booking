@@ -4,8 +4,7 @@ import time
 def ClearScreen():
     # Clearing the Screen
     os.system('cls')
-print('hi')
-i =1 
+ 
 #======================= Cinema classes ===================
 
 class ScreenSeating:
@@ -46,8 +45,8 @@ class Member:
         self.loyalty = 0
         self.seats = []
 
-    def AssignSeats(self,seats):
-        self.seats.append(seats)
+    def AssignSeats(self,row,seat):
+        self.seats.append((row,seat))
 
 class Admin:
     def __init__(self,Name,Surname,username,password):
@@ -185,7 +184,7 @@ def MainMenu():
         ClearScreen()
         print('============= Welcome to Weston Cinema ===========')
         print('\n1) Create Admin Account         2) Create new member')
-        print('3) Book tickets  4) Reserve seats')
+        print('3) Book tickets ')
         print('5) Assign movies to screen   6)View movie times')
         print('7) Save details 8) Add movie')
         iChoice = input('\nPlease selcet an option : \n')
@@ -198,11 +197,28 @@ def MainMenu():
         if iChoice =='2':
             CreateMember()
 
-        if iChoice == '4':
-            SeatingMenu()
+        if iChoice =='3':
+            current_member = None
+            name = GetName()
+            surname = GetSurname()
+            for guest in members:
+                if guest.name == name and guest.surname == surname:
+                    current_member = guest
+                    print(current_member.seats)
+                    input()
+            ticket_amount = int(input('\nHow many tickets would you like : '))
+            for x in range(ticket_amount):
+                seat,row = SeatingMenu()
+                current_member.AssignSeats(row,seat)
+                print(current_member.seats)
+                input()
+            
+            
+
+        
 
         if iChoice =='7':
-            SaveToFile(Admin_details,'AdminDetails')
+            SaveToFile(Admin_details,'AdminTest')
             SaveToFile(members,'CinemaMembers')
 
         
@@ -218,7 +234,7 @@ def SeatingMenu():
         if int(Seat)in ValidResponseSeat:
             print(type(Row),type(Seat))
             if screen1.SeatAvailable(Row,Seat )== True:
-                return Row,Seat
+                return (Row,Seat)
             else:
                 print('nSeat is unavailable')
                 input()
@@ -256,7 +272,7 @@ def OpenFiles(filename):
 Admin_details = OpenFiles('AdminTest')
 for x in Admin_details:
     print(x.name)
-members = []
+members = OpenFiles('CinemaMembers')
 Standard_users = []
 screen1= ScreenSeating()
 
