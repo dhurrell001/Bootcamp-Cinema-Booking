@@ -48,6 +48,10 @@ class Member:
     def AssignSeats(self,row,seat):
         self.seats.append((row,seat))
 
+    def PrintMember(self):
+        print(f'First name : {self.name} \nSurname : {self.surname}')
+        print(f'Date Joined : {self.date_joined} \nSeats : {self.seats}')
+
 class Admin:
     def __init__(self,Name,Surname,username,password):
 
@@ -204,16 +208,17 @@ def MainMenu():
             for guest in members:
                 if guest.name == name and guest.surname == surname:
                     current_member = guest
-                    print(current_member.seats)
+                    print('Welcome')
                     input()
+                
             ticket_amount = int(input('\nHow many tickets would you like : '))
             for x in range(ticket_amount):
                 seat,row = SeatingMenu()
                 current_member.AssignSeats(row,seat)
-                print(current_member.seats)
-                input()
-            
-            
+                
+              
+            print(current_member.PrintMember())
+            input()  
 
         
 
@@ -224,21 +229,23 @@ def MainMenu():
         
 
 def SeatingMenu():
+
     ValidResponseRow = 'abcde'
     ValidResponseSeat = range(1,11)
+    InnerWhile = True
 
-    print('=============== Seating Reservation Menu ================')
-    Row = input('\nPlease enter the row letter [A,B,C,D,E] : ')
-    if Row in ValidResponseRow:
-        Seat = int(input('\nPlease enter a seat number : \n'))
-        if int(Seat)in ValidResponseSeat:
-            print(type(Row),type(Seat))
-            if screen1.SeatAvailable(Row,Seat )== True:
-                return (Row,Seat)
-            else:
-                print('nSeat is unavailable')
-                input()
-                SeatingMenu()
+    while InnerWhile:
+        print('=============== Seating Reservation Menu ================')
+        Row = input('\nPlease enter the row letter [A,B,C,D,E] : ')
+        if Row in ValidResponseRow:
+            Seat = int(input('\nPlease enter a seat number : \n'))
+            if int(Seat)in ValidResponseSeat:
+                
+                if screen1.SeatAvailable(Row,Seat )== True:    
+                    return (Row,Seat)
+                else:                   
+                    input()
+                    continue
         else:
             print('\nInvalid Seat Number')
             input()
@@ -277,4 +284,3 @@ Standard_users = []
 screen1= ScreenSeating()
 
 MainMenu()
-print('testgit2')
