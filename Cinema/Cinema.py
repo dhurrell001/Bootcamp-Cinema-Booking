@@ -7,7 +7,7 @@ def ClearScreen():
  
 #======================= Cinema classes ===================
 
-class ScreenSeating:
+class Screen:
 
     def __init__(self):
         self.seating = [[True for x in range(10)] for y in range(5)]
@@ -26,10 +26,13 @@ class ScreenSeating:
             print('\nSeat is unavailable')
             input()
             return False
+    def PrintScreen(self):
+        for film in self.moviesShowing:
+            print(f'{film.title}\n{film.times}\n')
 
 class Movie:
 
-    def __init__(self,title,times): # Will take variable in future
+    def __init__(self,title): # Will take variable in future
 
         self.title = title
         self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
@@ -129,6 +132,9 @@ def GetMemberDetails():
     user_password = Check_new_Password(GetPassword())
 
 def Check_If_Admin():
+    #Checks through list of admin class objects (Admin_Detail) and return true if
+    # admin account exists. else false
+
     Username = input('Please enter your admin username : ')
     Password = input('Please enter your password')
 
@@ -139,6 +145,9 @@ def Check_If_Admin():
     return False
 
 def CreateMember():
+    # checks if user has admin privaliges to allow for new member to be created
+    # if member is created, member object added to members list
+
     if Check_If_Admin() == True:
         name = input('\nPlease enter members first name : \n')
         surname = input('\nPlease enter members surname : \n')
@@ -148,7 +157,8 @@ def CreateMember():
         print('\nPlease login as administrator to create new members')
 
 def CreateAdmin():
-
+    #Create a new admin account, running checks for valid password and username
+    # add new admin object to Admin_details list
 
     name = GetName()
     surname = GetSurname()
@@ -158,17 +168,20 @@ def CreateAdmin():
     Admin_details.append(Admin(name,surname,username,userpassword))
 # ======================= Cinnema fuctions =====================
 
-def GetSeats():
-    bRunning =True
-    while True:
 
-        print('==================== SEAT BOOKING =======================\n')
-        Row = input('\nPlease enter a row letter : ' )
-        Seat = int(input('\nPlease enter a seat number : '))
 
-        return Row,Seat
+def AddMovie(screenObject):
+    # parameter is a Screen() object. gets movie title and adds to screen object,
+    # movies showing attribute.
+
+    print('============== Add New Movie ==============')
+    title =input ('\nPlease enter the name of the movie')
+    screenObject.moviesShowing.append(Movie(title))
+
 #=====================  Menu Functions ================================
+
 def Continue():
+    # Routine to allow exit from menu\program
 
     sValidResponse = 'ynYn'   
     sChoice = input('\nWould you like to exit to main menu? Y,N,y,n : ')
@@ -220,13 +233,18 @@ def MainMenu():
             print(current_member.PrintMember())
             input()  
 
-        
+        if iChoice =='5':
+
+            AddMovie(screen1)
+            screen1.PrintScreen()
+            input()
+
 
         if iChoice =='7':
             SaveToFile(Admin_details,'AdminTest')
             SaveToFile(members,'CinemaMembers')
 
-        
+       
 
 def SeatingMenu():
 
@@ -258,6 +276,8 @@ def SeatingMenu():
 
 # ======================== Save Data Functions ===================
 def SaveToFile(SaveVarable,filename):
+    # saveVariable is the existing variable containing information to be saved
+    # filename is name of file to be created (string)
        
       fileObj = open(filename, 'wb')
       pickle.dump(SaveVarable,fileObj)
@@ -281,7 +301,6 @@ for x in Admin_details:
     print(x.name)
 members = OpenFiles('CinemaMembers')
 Standard_users = []
-screen1= ScreenSeating()
+screen1= Screen()
 
 MainMenu()
-print('testing git')
