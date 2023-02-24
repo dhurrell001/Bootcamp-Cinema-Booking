@@ -9,7 +9,8 @@ def ClearScreen():
 
 class Screen:
 
-    def __init__(self):
+    def __init__(self,name):
+        self.name =name
         self.seating = [[True for x in range(10)] for y in range(5)]
         self.row = {'a':0,'b':1,'c':2,'d':3,'e':4}
         self.moviesShowing = [] # will take movie object
@@ -178,6 +179,24 @@ def AddMovie(screenObject):
     title =input ('\nPlease enter the name of the movie')
     screenObject.moviesShowing.append(Movie(title))
 
+def AddScreen():
+    print('============== ADD CINEMA SCREEN ==================')
+    ScreenName = input('Please enter the name of New Cinema Screen : \n\n')
+    Screens.append(Screen(ScreenName))
+
+def GetScreen():
+    print('=============== AVAILABLE SCREENS ===============\n')
+    for x in Screens:
+        print(x.name)
+    screen_choice = input('\nPlease enter the name of screen you would like to access : \n')
+    for screen in Screens:
+        if screen.name == screen_choice:
+            return screen
+        else:
+            print('Screen name not found')
+            input()
+            
+
 #=====================  Menu Functions ================================
 
 def Continue():
@@ -201,7 +220,7 @@ def MainMenu():
         ClearScreen()
         print('============= Welcome to Weston Cinema ===========')
         print('\n1) Create Admin Account         2) Create new member')
-        print('3) Book tickets ')
+        print('3) Book tickets  4) Add New Screen')
         print('5) Assign movies to screen   6)View movie times')
         print('7) Save details 8) Add movie')
         iChoice = input('\nPlease selcet an option : \n')
@@ -216,6 +235,7 @@ def MainMenu():
 
         if iChoice =='3':
             current_member = None
+            current_screen = None
             name = GetName()
             surname = GetSurname()
             for guest in members:
@@ -223,30 +243,39 @@ def MainMenu():
                     current_member = guest
                     print('Welcome')
                     input()
+            
+            screen_choice = input('Please enter the screen you would like to use : \n')
+            for screen in Screens:
+                if screen.name == screen_choice:
+                    current_screen = screen
                 
             ticket_amount = int(input('\nHow many tickets would you like : '))
             for x in range(ticket_amount):
-                seat,row = SeatingMenu()
-                current_member.AssignSeats(row,seat)
-                
-              
+                seat,row = SeatingMenu(current_screen)
+                current_member.AssignSeats(row,seat)            
             print(current_member.PrintMember())
             input()  
+            current_screen.PrintScreen()
+            input()
+        if iChoice =='4':
+            AddScreen()
+
 
         if iChoice =='5':
-
-            AddMovie(screen1)
-            screen1.PrintScreen()
+            screen = GetScreen()
+            AddMovie(screen)
+            screen.PrintScreen()
             input()
 
 
         if iChoice =='7':
             SaveToFile(Admin_details,'AdminTest')
             SaveToFile(members,'CinemaMembers')
+            SaveToFile(Screens,'Movies')
 
        
 
-def SeatingMenu():
+def SeatingMenu(screen_name):
 
     ValidResponseRow = 'abcde'
     ValidResponseSeat = range(1,11)
@@ -259,7 +288,7 @@ def SeatingMenu():
             Seat = int(input('\nPlease enter a seat number : \n'))
             if int(Seat)in ValidResponseSeat:
                 
-                if screen1.SeatAvailable(Row,Seat )== True:    
+                if screen_name.SeatAvailable(Row,Seat )== True:    
                     return (Row,Seat)
                 else:                   
                     input()
@@ -301,6 +330,24 @@ for x in Admin_details:
     print(x.name)
 members = OpenFiles('CinemaMembers')
 Standard_users = []
-screen1= Screen()
+Screens= OpenFiles('Movies')
+
+
+#screen1.PrintScreen()
+#input()
+    #print(x.title)
+#input()
 
 MainMenu()
+"""
+file opening error messages
+from os import strerror
+
+try:
+    s = open("c:/users/user/Desktop/file.txt", "rt")
+    # Actual processing goes here.
+    s.close()
+except Exception as exc:
+    print("The file could not be opened:", strerror(exc.errno))
+
+"""
