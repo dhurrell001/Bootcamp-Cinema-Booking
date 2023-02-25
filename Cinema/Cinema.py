@@ -221,6 +221,18 @@ def GetScreen():
                 continue
 
                 
+    print('=============== AVAILABLE SCREENS ===============\n')
+    for x in Screens:
+        print(x.name)
+    screen_choice = input('\nPlease enter the name of screen you would like to access : \n')
+    for screen in Screens:
+        if screen.name == screen_choice:
+            return screen
+        else:
+            print('Screen name not found')
+            input()
+            
+
 
 #=====================  Menu Functions ================================
 
@@ -270,6 +282,7 @@ def MainMenu():
                     current_member = guest
                     print('\nMember Found..')
                     input()
+
                     current_booking.name = current_member.name
                     current_booking.surname = current_member.surname
            
@@ -279,9 +292,11 @@ def MainMenu():
                # if screen.name == screen_choice:"""
             current_screen = GetScreen()    
             ClearScreen()         
+
             ticket_amount = int(input('\nHow many tickets would you like : '))
             current_booking.tickets = ticket_amount
             for x in range(ticket_amount):
+
                 row ,seat= SeatingMenu(current_screen)
                 current_member.AssignSeats(row,seat)  
                 current_booking.seats.append((row.upper(),seat))
@@ -298,6 +313,7 @@ def MainMenu():
         
         if iChoice =='4':
             AddScreen()
+
 
         if iChoice =='5':
             screen = GetScreen()
@@ -388,5 +404,6 @@ try:
 except Exception as exc:
     print("The file could not be opened:", strerror(exc.errno))
 why are changes not working
+=======
 
 """
