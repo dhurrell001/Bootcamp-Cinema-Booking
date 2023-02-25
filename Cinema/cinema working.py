@@ -63,7 +63,7 @@ class Member:
 
     def PrintMember(self):
         print(f'First name : {self.name} \nSurname : {self.surname}')
-        print(f'Date Joined : {self.date_joined} \nSeats : {self.seats}')
+        print(f'Date Joined : {self.date_joined}\n')
 
 class Admin:
     def __init__(self,Name,Surname,username,password):
@@ -72,6 +72,8 @@ class Admin:
         self.surname = Surname
         self.username = username
         self.password = password
+    def __str__(self):
+        return (f'{self.username} {self.password}')
 
 class Booking(Member,Screen):
 
@@ -93,9 +95,8 @@ class Booking(Member,Screen):
         print(f'Admit : {self.tickets}\n')
         print('============================')
 
-        
-
 #===================  Login Functions =============================
+
 def Check_new_Username(username):
            
     bFlag = True
@@ -197,8 +198,8 @@ def CreateAdmin():
     userpassword = Check_new_Password(GetPassword())
 
     Admin_details.append(Admin(name,surname,username,userpassword))
-# ======================= Cinnema fuctions =====================
 
+# ======================= Cinnema fuctions =====================
 
 
 def AddMovie(screenObject):
@@ -206,7 +207,7 @@ def AddMovie(screenObject):
     # movies showing attribute.
 
     print('============== Add New Movie ==============')
-    title =input ('\nPlease enter the name of the movie')
+    title =input ('\nPlease enter the name of the movie : \n')
     screenObject.moviesShowing.append(Movie(title))
 
 def AddScreen():
@@ -228,18 +229,12 @@ def GetScreen():
         for screen in Screens:
             if screen.name == screen_choice:
                 return screen
-            else:
-                print('Screen name not found')
-                input()
-                continue
-
-                
-
+        else:
+            print('Screen name not found')
+            input()
+            continue
 
 #=====================  Menu Functions ================================
-
-
-    
 
 def Continue():
     # Routine to allow exit from menu\program
@@ -260,9 +255,9 @@ def AdminMenu():
     while bRunning:
         ClearScreen()
         print('============= Welcome to Admin Menu ===========')
-        print('\n1) Create Admin Account         2) Create new member')
+        print('\n1) Create Admin Account 2) Create new member')
         print('3) Add Movie  4) Add New Screen 5) Save details')
-
+        print('6) View existing members 7) Main Menu')
         iChoice = input('\nPlease select an option : \n')
 
         if iChoice =='1':
@@ -286,6 +281,12 @@ def AdminMenu():
             SaveToFile(Admin_details,'AdminTest')
             SaveToFile(members,'CinemaMembers')
             SaveToFile(Screens,'Movies')
+        if iChoice == '6':
+            for member in members:
+                member.PrintMember()
+            input()
+        if iChoice == '7':
+            MainMenu()
 
 
 
@@ -346,7 +347,7 @@ def MainMenu():
             input()
 
 
-            current_screen.PrintScreen()
+            #current_screen.PrintScreen()
         
         if iChoice =='3':
             SaveToFile(Admin_details,'AdminTest')
@@ -355,7 +356,7 @@ def MainMenu():
 
         if iChoice =='4':
             current_screen = GetScreen()
-            current_screen.PrintScreen()
+            #current_screen.PrintScreen()
             current_screen.MovieMenu()
             input()
        
@@ -411,10 +412,12 @@ def OpenFiles(filename):
 
 Admin_details = OpenFiles('AdminTest')
 for x in Admin_details:
-    print(x.name)
+    print(x)
+input()
 members = OpenFiles('CinemaMembers')
 Standard_users = []
 Screens= OpenFiles('Movies')
+
 
 
 
