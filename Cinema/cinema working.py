@@ -299,7 +299,7 @@ def MainMenu():
         print('\n1) Administration Menu   2) Book Tickets')
         print('3) Save Details  4)View screen movies ' )
         
-        print('5) View movie times')
+        print('5) View movie times 6) Exit Program')
         iChoice = input('\nPlease select an option : \n')
 
         if iChoice =='1':
