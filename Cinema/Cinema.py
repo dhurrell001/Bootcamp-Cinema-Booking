@@ -56,7 +56,7 @@ class Member:
         print(f'First name : {self.name} \nSurname : {self.surname}')
         print(f'Date Joined : {self.date_joined} \nSeats : {self.seats}')
 
-class Admin:
+class Admin: 
     def __init__(self,Name,Surname,username,password):
 
         self.name = Name
