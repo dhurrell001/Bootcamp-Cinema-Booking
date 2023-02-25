@@ -222,7 +222,6 @@ def GetScreen():
 
                 
 
-
 #=====================  Menu Functions ================================
 
 def Continue():
@@ -271,7 +270,6 @@ def MainMenu():
                     current_member = guest
                     print('\nMember Found..')
                     input()
-
                     current_booking.name = current_member.name
                     current_booking.surname = current_member.surname
            
@@ -281,17 +279,14 @@ def MainMenu():
                # if screen.name == screen_choice:"""
             current_screen = GetScreen()    
             ClearScreen()         
-
             ticket_amount = int(input('\nHow many tickets would you like : '))
             current_booking.tickets = ticket_amount
             for x in range(ticket_amount):
-
                 row ,seat= SeatingMenu(current_screen)
                 current_member.AssignSeats(row,seat)  
                 current_booking.seats.append((row.upper(),seat))
                 input()
                 ClearScreen()
-
 
             current_booking.PrintTicket()          
            # print(current_member.PrintMember())
@@ -299,12 +294,10 @@ def MainMenu():
             current_screen.PrintScreen()
             input()
 
-
             current_screen.PrintScreen()
         
         if iChoice =='4':
             AddScreen()
-
 
         if iChoice =='5':
             screen = GetScreen()
@@ -365,6 +358,10 @@ def OpenFiles(filename):
       fileObj.close()
     
 
+        
+
+
+
 
 Admin_details = OpenFiles('AdminTest')
 for x in Admin_details:
@@ -391,8 +388,4 @@ try:
 except Exception as exc:
     print("The file could not be opened:", strerror(exc.errno))
 
-
-
 """
-  
-

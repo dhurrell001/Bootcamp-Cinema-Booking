@@ -1,0 +1,16 @@
+dic ={1:'Batman',2:'Thor',3:'Clockwork orange'}
+
+def PrintDic(dic):
+
+    for k,v in dic.items():
+        print(f'{k} : {v}')
+
+PrintDic(dic)
+
+def BookMovieMenu():
+
+    print('=========== MOVIE BOOKING =========')
+    iChoice = input('\nPlease enter the number of the movie you would like to book : \n')
+    return iChoice
+
+print(dic[int(BookMovieMenu())])
