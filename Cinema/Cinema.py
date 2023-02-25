@@ -221,17 +221,6 @@ def GetScreen():
                 continue
 
                 
-    print('=============== AVAILABLE SCREENS ===============\n')
-    for x in Screens:
-        print(x.name)
-    screen_choice = input('\nPlease enter the name of screen you would like to access : \n')
-    for screen in Screens:
-        if screen.name == screen_choice:
-            return screen
-        else:
-            print('Screen name not found')
-            input()
-            
 
 
 #=====================  Menu Functions ================================
@@ -303,11 +292,13 @@ def MainMenu():
                 input()
                 ClearScreen()
 
+
             current_booking.PrintTicket()          
            # print(current_member.PrintMember())
             input()  
             current_screen.PrintScreen()
             input()
+
 
             current_screen.PrintScreen()
         
@@ -374,10 +365,6 @@ def OpenFiles(filename):
       fileObj.close()
     
 
-        
-
-
-
 
 Admin_details = OpenFiles('AdminTest')
 for x in Admin_details:
@@ -403,7 +390,9 @@ try:
     s.close()
 except Exception as exc:
     print("The file could not be opened:", strerror(exc.errno))
-why are changes not working
-=======
+
+
 
 """
+  
+
