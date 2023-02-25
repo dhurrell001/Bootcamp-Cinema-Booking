@@ -31,6 +31,14 @@ class Screen:
         print('================= MOVIES SHOWN')
         for film in self.moviesShowing:
             print(f'{film.title}\n{film.times}\n')
+    def MovieMenu(self):
+        print('================= MOVIES SHOWING ===============')
+        for i in range(0, len(self.moviesShowing)):
+            print(str(i) + ": " + str(self.moviesShowing[i].title))
+
+        choice = int(input("\nPlease select from the options above\n"))
+
+        return self.moviesShowing[choice].title
 
 class Movie:
 
@@ -202,11 +210,15 @@ def AddMovie(screenObject):
     screenObject.moviesShowing.append(Movie(title))
 
 def AddScreen():
+    # Creates new screen object and add to screens list
+
     print('============== ADD CINEMA SCREEN ==================')
     ScreenName = input('Please enter the name of New Cinema Screen : \n\n')
     Screens.append(Screen(ScreenName))
 
 def GetScreen():
+    #Prints list of existing saved screens. compares user input to screen.name in Saved screen list
+    #return screen object
     bRunning = True
     while bRunning:
         print('=============== AVAILABLE SCREENS ===============\n')
@@ -226,14 +238,7 @@ def GetScreen():
 
 #=====================  Menu Functions ================================
 
-def MovieMenu(Screen):
-    print('================= MOVIES SHOWING ===============')
-    for i in range(0, len(Screen.moviesShowing)):
-        print(str(i) + ": " + str(Screen.moviesShowing[i].title))
 
-    choice = int(input("\nPlease select from the options above\n"))
-
-    return Screen.moviesShowing[choice].title)
     
 
 def Continue():
@@ -249,17 +254,15 @@ def Continue():
             ClearScreen()
             print('\nThank you for using Cinema Booking'.center(60,'+'))
             return False
-     
-def MainMenu():
+def AdminMenu():
 
     bRunning = True
     while bRunning:
         ClearScreen()
-        print('============= Welcome to Weston Cinema ===========')
+        print('============= Welcome to Admin Menu ===========')
         print('\n1) Create Admin Account         2) Create new member')
-        print('3) Book tickets  4) Add New Screen')
-        print('5) Assign movies to screen   6)View movie times')
-        print('7) Save details 8) Add movie 9)View screen movies')
+        print('3) Add Movie  4) Add New Screen 5) Save details')
+
         iChoice = input('\nPlease select an option : \n')
 
         if iChoice =='1':
@@ -271,6 +274,38 @@ def MainMenu():
             CreateMember()
 
         if iChoice =='3':
+            screen = GetScreen()
+            AddMovie(screen)
+            screen.PrintScreen()
+            input()
+
+        if iChoice =='4':
+            AddScreen()
+
+        if iChoice =='5':
+            SaveToFile(Admin_details,'AdminTest')
+            SaveToFile(members,'CinemaMembers')
+            SaveToFile(Screens,'Movies')
+
+
+
+def MainMenu():
+
+    bRunning = True
+    while bRunning:
+        ClearScreen()
+        print('============= Welcome to Weston Cinema ===========')
+        print('\n1) Administration Menu   2) Book Tickets')
+        print('3) Save Details  4)View screen movies ' )
+        
+        print('5) View movie times')
+        iChoice = input('\nPlease select an option : \n')
+
+        if iChoice =='1':
+
+            AdminMenu()
+
+        if iChoice =='2':
             ClearScreen()
             current_booking = Booking()
             current_member = None
@@ -287,9 +322,7 @@ def MainMenu():
                     current_booking.surname = current_member.surname
            
             ClearScreen()
-          # screen_choice = input('Please enter the screen you would like to use : \n')
-           # for screen in Screens:
-               # if screen.name == screen_choice:"""
+          
             current_screen = GetScreen()    
             ClearScreen()         
 
@@ -303,6 +336,8 @@ def MainMenu():
                 input()
                 ClearScreen()
 
+            Selected_Movie =current_screen.MovieMenu()
+            current_booking.movie = Selected_Movie   
 
             current_booking.PrintTicket()          
            # print(current_member.PrintMember())
@@ -313,30 +348,22 @@ def MainMenu():
 
             current_screen.PrintScreen()
         
-        if iChoice =='4':
-            AddScreen()
-
-
-        if iChoice =='5':
-            screen = GetScreen()
-            AddMovie(screen)
-            screen.PrintScreen()
-            input()
-
-
-        if iChoice =='7':
+        if iChoice =='3':
             SaveToFile(Admin_details,'AdminTest')
             SaveToFile(members,'CinemaMembers')
             SaveToFile(Screens,'Movies')
 
-        if iChoice =='9':
+        if iChoice =='4':
             current_screen = GetScreen()
             current_screen.PrintScreen()
-            MovieMenu(current_screen)
+            current_screen.MovieMenu()
             input()
        
 
 def SeatingMenu(screen_name):
+    #Takes user input for row letter and seat number. Takes screen object as parameter. 
+    #uses screem method to check if seat is available. 
+    # if seat available returns row and seat as tuple
 
     ValidResponseRow = 'abcde'
     ValidResponseSeat = range(1,11)
@@ -388,8 +415,7 @@ for x in Admin_details:
 members = OpenFiles('CinemaMembers')
 Standard_users = []
 Screens= OpenFiles('Movies')
-print(Screens)
-input()
+
 
 
 
