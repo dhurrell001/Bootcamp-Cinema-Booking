@@ -14,6 +14,8 @@ class Screen:
         self.seating = [[True for x in range(10)] for y in range(5)]
         self.row = {'a':0,'b':1,'c':2,'d':3,'e':4}
         self.moviesShowing = [] # will take movie object
+        self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
+
         
 
     def SeatAvailable(self,row,seat):
@@ -31,22 +33,28 @@ class Screen:
         print('================= MOVIES SHOWN')
         for film in self.moviesShowing:
             print(f'{film.title}\n{film.times}\n')
+
     def MovieMenu(self):
         print('================= MOVIES SHOWING ===============')
         for i in range(0, len(self.moviesShowing)):
             print(str(i) + ": " + str(self.moviesShowing[i].title))
 
-        choice = int(input("\nPlease select from the options above\n"))
+        choice = int(input("\nPlease select a movie from the bove options \n"))
 
         return self.moviesShowing[choice].title
-
+    
+    def TimeMenu(self):
+        print('================= TIMES SHOWING ===============')
+        print(self.times)
+        input()
+       
 class Movie:
 
     def __init__(self,title): # Will take variable in future
 
         self.title = title
         self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
-
+        
 class Member:
 
     def __init__(self,Name,Surname):
@@ -308,11 +316,13 @@ def MainMenu():
 
         if iChoice =='2':
             ClearScreen()
+            # Assign Variables for this booking
             current_booking = Booking()
             current_member = None
             current_screen = None
             name = GetName()
             surname = GetSurname()
+            #
             for guest in members:
                 if guest.name == name and guest.surname == surname:
                     current_member = guest
@@ -338,6 +348,7 @@ def MainMenu():
                 ClearScreen()
 
             Selected_Movie =current_screen.MovieMenu()
+            current_screen.TimeMenu()
             current_booking.movie = Selected_Movie   
 
             current_booking.PrintTicket()          
