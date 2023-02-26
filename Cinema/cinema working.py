@@ -15,9 +15,7 @@ class Screen:
         self.row = {'a':0,'b':1,'c':2,'d':3,'e':4}
         self.moviesShowing = [] # will take movie object
         self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
-
-        
-
+      
     def SeatAvailable(self,row,seat):
 
         if self.seating[self.row[row]][seat]== True:
@@ -29,6 +27,7 @@ class Screen:
             print('\nSeat is unavailable')
             input()
             return False
+        
     def PrintScreen(self):
         print('================= MOVIES SHOWN')
         for film in self.moviesShowing:
@@ -93,8 +92,44 @@ class Booking(Member,Screen):
         self.time = ""
         self.tickets = 0
         self.seats = []
+        self.current_screen = 0
+
+    def GetMember(self):
+
+        name = GetName()
+        surname = GetSurname()
+        
+        for guest in members:
+            if guest.name == name and guest.surname == surname:
+                current_member = guest
+                print('\nMember Found..')
+                input()
+
+                self.name = name
+                self.surname = surname
+
+    def GetSeats(self):
+
+        #self.current_screen = GetScreen()    
+        ClearScreen()         
+        ticket_amount = int(input('\nHow many tickets would you like : '))
+        self.tickets = ticket_amount
+        for x in range(ticket_amount):
+            row ,seat= SeatingMenu(self.current_screen)
+            #current_member.AssignSeats(row,seat)  
+            self.seats.append((row.upper(),seat))
+            input()
+            ClearScreen()
+
+    def GetMovie(self):
+
+        self.current_screen = GetScreen() 
+        Selected_Movie =self.current_screen.MovieMenu()
+        self.current_screen.TimeMenu()
+        self.movie = Selected_Movie 
 
     def PrintTicket(self):
+
         print('========== TICKET ==========')
         print(f'\n Name : {self.name} {self.surname}')
         print(f'Movie : {self.movie}')
@@ -318,47 +353,12 @@ def MainMenu():
             ClearScreen()
             # Assign Variables for this booking
             current_booking = Booking()
-            current_member = None
-            current_screen = None
-            name = GetName()
-            surname = GetSurname()
-            #
-            for guest in members:
-                if guest.name == name and guest.surname == surname:
-                    current_member = guest
-                    print('\nMember Found..')
-                    input()
-
-                    current_booking.name = current_member.name
-                    current_booking.surname = current_member.surname
-           
-            ClearScreen()
-          
-            current_screen = GetScreen()    
-            ClearScreen()         
-
-            ticket_amount = int(input('\nHow many tickets would you like : '))
-            current_booking.tickets = ticket_amount
-            for x in range(ticket_amount):
-
-                row ,seat= SeatingMenu(current_screen)
-                current_member.AssignSeats(row,seat)  
-                current_booking.seats.append((row.upper(),seat))
-                input()
-                ClearScreen()
-
-            Selected_Movie =current_screen.MovieMenu()
-            current_screen.TimeMenu()
-            current_booking.movie = Selected_Movie   
-
+            current_booking.GetMember()
+            current_booking.GetMovie()
+            current_booking.GetSeats()
             current_booking.PrintTicket()          
-           # print(current_member.PrintMember())
             input()  
-            current_screen.PrintScreen()
-            input()
-
-
-            #current_screen.PrintScreen()
+            
         
         if iChoice =='3':
             SaveToFile(Admin_details,'AdminTest')
@@ -404,6 +404,7 @@ def SeatingMenu(screen_name):
 
 
 # ======================== Save Data Functions ===================
+
 def SaveToFile(SaveVarable,filename):
     # saveVariable is the existing variable containing information to be saved
     # filename is name of file to be created (string)
