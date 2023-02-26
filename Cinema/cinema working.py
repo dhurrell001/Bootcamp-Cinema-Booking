@@ -29,24 +29,43 @@ class Screen:
             return False
         
     def PrintScreen(self):
-        print('================= MOVIES SHOWN')
+        print('================= MOVIES SHOWN ==================')
         for film in self.moviesShowing:
             print(f'{film.title}\n{film.times}\n')
 
     def MovieMenu(self):
-        print('================= MOVIES SHOWING ===============')
-        for i in range(0, len(self.moviesShowing)):
-            print(str(i) + ": " + str(self.moviesShowing[i].title))
+        brunning = True
+        while brunning:
+            try:
+                print('================= MOVIES SHOWING ===============')
+                for i in range(0, len(self.moviesShowing)):
+                    print(str(i) + ": " + str(self.moviesShowing[i].title))
 
-        choice = int(input("\nPlease select a movie from the bove options \n"))
+                choice = int(input("\nPlease select a movie from the above options \n"))
 
-        return self.moviesShowing[choice].title
+                return self.moviesShowing[choice].title
+            except:
+                print('Please enter  valid input')
+                time.sleep(0.5)
+                ClearScreen()
+                continue
     
     def TimeMenu(self):
-        print('================= TIMES SHOWING ===============')
-        print(self.times)
-        input()
-       
+        brunning = True
+        while brunning:
+            try:
+                print('================= TIMES SHOWING ===============')
+            
+                for k,v in self.times.items():
+                    print(f'{k} : {v}')
+                iChoice = int(input('Please enter a time you would like to view movie : \n'))
+                return self.times[iChoice]
+            except:
+                ClearScreen()
+                print('Please enter a valid number\n')
+                time.sleep(1)
+                continue
+        
 class Movie:
 
     def __init__(self,title): # Will take variable in future
@@ -96,8 +115,8 @@ class Booking(Member,Screen):
 
     def GetMember(self):
 
-        name = GetName()
-        surname = GetSurname()
+        name = GetName('m')
+        surname = GetSurname('m' )
         
         for guest in members:
             if guest.name == name and guest.surname == surname:
@@ -111,8 +130,15 @@ class Booking(Member,Screen):
     def GetSeats(self):
 
         #self.current_screen = GetScreen()    
-        ClearScreen()         
-        ticket_amount = int(input('\nHow many tickets would you like : '))
+        ClearScreen()  
+        try:       
+            ticket_amount = int(input('\nHow many tickets would you like : '))
+        except:
+            print('Please enter a valid number')
+            time.sleep(0.5)
+            ClearScreen()
+            ticket_amount = int(input('\nHow many tickets would you like : '))
+
         self.tickets = ticket_amount
         for x in range(ticket_amount):
             row ,seat= SeatingMenu(self.current_screen)
@@ -125,8 +151,11 @@ class Booking(Member,Screen):
 
         self.current_screen = GetScreen() 
         Selected_Movie =self.current_screen.MovieMenu()
-        self.current_screen.TimeMenu()
+        #self.current_screen.TimeMenu()
         self.movie = Selected_Movie 
+    def GetTime(self):
+        self.time = self.current_screen.TimeMenu()
+
 
     def PrintTicket(self):
 
@@ -189,10 +218,16 @@ def Check_new_Password(password):
         print('\n======= password saved =======\n')
     return password
 
-def GetName():
-    return input('\nPlease enter your name :\n')  
+def GetName(flag):
+    # flag  'm' for member message
+    if flag.lower() == 'm':
+        return input('\nPlease enter cinema members first name name :\n') 
+    return input('\nPlease enter your first name :\n')  
 
-def GetSurname():
+def GetSurname(flag):
+    # flag  'm' for member message
+    if flag.lower() == 'm':
+        return input('\nPlease enter cinema members surname : \n') 
     return input('\nPlease enter your surname : \n')  
 
 def GetUsername():
@@ -210,8 +245,8 @@ def Check_If_Admin():
     #Checks through list of admin class objects (Admin_Detail) and return true if
     # admin account exists. else false
 
-    Username = input('Please enter your admin username : ')
-    Password = input('Please enter your password')
+    Username = input('Please enter your admin username :\n ')
+    Password = input('Please enter your password :\n ')
 
     for user in Admin_details:
         if user.username == Username and user.password == Password:
@@ -228,6 +263,9 @@ def CreateMember():
         surname = input('\nPlease enter members surname : \n')
 
         members.append(Member(name,surname))
+        ClearScreen()
+        print('New cinema member created...')
+        time.sleep(1)
     else:
         print('\nPlease login as administrator to create new members')
 
@@ -235,12 +273,15 @@ def CreateAdmin():
     #Create a new admin account, running checks for valid password and username
     # add new admin object to Admin_details list
 
-    name = GetName()
-    surname = GetSurname()
+    name = GetName('a')
+    surname = GetSurname('a')
     username = Check_new_Username(GetUsername()) 
     userpassword = Check_new_Password(GetPassword())
 
     Admin_details.append(Admin(name,surname,username,userpassword))
+    ClearScreen()
+    print('New Admin. Account created....')
+    time.sleep(1)
 
 # ======================= Cinnema fuctions =====================
 
@@ -261,6 +302,26 @@ def AddScreen():
     Screens.append(Screen(ScreenName))
 
 def GetScreen():
+    brunning = True
+    valid_screens = [screen for screen in Screens]
+    
+    while brunning:
+        try:
+            print('================= AVAILABLE SCREENS ===============')
+            for i,screen in enumerate(valid_screens):
+                print(f'{i} : {screen.name}')
+
+            iChoice = int(input('Please enter a number for screen to view :'))
+            return valid_screens[iChoice]
+        except:
+            print('Please enter a valid number')
+            time.sleep(0.5)
+            iChoice = int(input('Please enter a number for screen to view :'))
+
+
+                
+"""
+def GetScreen():
     #Prints list of existing saved screens. compares user input to screen.name in Saved screen list
     #return screen object
     bRunning = True
@@ -275,7 +336,7 @@ def GetScreen():
         else:
             print('Screen name not found')
             input()
-            continue
+            continue"""
 
 #=====================  Menu Functions ================================
 
@@ -354,8 +415,13 @@ def MainMenu():
             # Assign Variables for this booking
             current_booking = Booking()
             current_booking.GetMember()
+            ClearScreen()
             current_booking.GetMovie()
+            ClearScreen()
             current_booking.GetSeats()
+            ClearScreen()
+            current_booking.GetTime()
+            ClearScreen()
             current_booking.PrintTicket()          
             input()  
             
@@ -367,8 +433,13 @@ def MainMenu():
 
         if iChoice =='4':
             current_screen = GetScreen()
-            #current_screen.PrintScreen()
-            current_screen.MovieMenu()
+            ClearScreen()
+            current_screen.PrintScreen()
+            input()
+
+        if iChoice =='5':
+            current_screen = GetScreen()
+            current_screen.TimeMenu()
             input()
        
 
