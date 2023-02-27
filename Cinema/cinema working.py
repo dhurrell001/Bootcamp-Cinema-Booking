@@ -1,6 +1,7 @@
 import os
 import pickle
 import time
+import datetime
 def ClearScreen():
     # Clearing the Screen
     os.system('cls')
@@ -108,7 +109,8 @@ class Booking(Member,Screen):
         self.name = ""
         self.surname = ""
         self.movie = ""
-        self.time = ""
+        self.time = ''
+        self.date = None
         self.tickets = 0
         self.seats = []
         self.current_screen = 0
@@ -156,11 +158,14 @@ class Booking(Member,Screen):
     def GetTime(self):
         self.time = self.current_screen.TimeMenu()
 
+    def GetBookingDate(self):
+        self.date = datetime.datetime.now()
 
     def PrintTicket(self):
 
         print('========== TICKET ==========')
-        print(f'\n Name : {self.name} {self.surname}')
+        print(f'\nName : {self.name} {self.surname}')
+        print(f'Date Booked : {self.date}')
         print(f'Movie : {self.movie}')
         print(f'Seats : {self.seats}')
         print(f'Viewing time : {self.time}')
@@ -409,7 +414,6 @@ def MainMenu():
         if iChoice =='1':
 
             AdminMenu()
-
         if iChoice =='2':
             ClearScreen()
             # Assign Variables for this booking
@@ -422,6 +426,7 @@ def MainMenu():
             ClearScreen()
             current_booking.GetTime()
             ClearScreen()
+            current_booking.GetBookingDate()
             current_booking.PrintTicket()          
             input()  
             
