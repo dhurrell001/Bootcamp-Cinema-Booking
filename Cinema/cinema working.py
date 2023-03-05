@@ -2,6 +2,9 @@ import os
 import pickle
 import time
 import datetime
+
+class ValueOutOfRange(Exception): # creates child class of Exception
+  pass
 def ClearScreen():
     # Clearing the Screen
     os.system('cls')
@@ -361,8 +364,40 @@ def Continue():
             ClearScreen()
             print('\nThank you for using Cinema Booking'.center(60,'+'))
             return False
+def DynamicMenu(list):
+  # Takes menu options a list, error checks for integer input, return integer
+  brunning = True # creates loop. exits loop when valid value is returned
+  
+  while brunning:
+    
+    ClearScreen()
+    print(list[0])
+    
+    try:
+      for num in range(1,len(list)): # uses range to index over each item of list
+        print(f'{num} : {list[num]}')
+      
+      iChoice = int(input('\nPlease select an option : \n'))
+      
+      if iChoice > len(list)-1 or iChoice < 1: # create conditoion to trigger custom exception
+        raise ValueOutOfRange
         
+    except ValueOutOfRange: # triggers error if input is not within menu options (IndexError)
+      print(f'Please enter a number between 1 and {len(list)-1}')
+      input('\n[Please press ENTER to continue....]')
+      
+    except ValueError: # Triggers value error i.e letter entered instead of number
+      print(f'Whoops ... Please enter a whole number between 1 and {len(list)-1}')
+      input('\n[Please press ENTER to continue....]')
+      continue
+
+    except: # General exception if above exceptions are not triggered
+      print('Unknown Error. Please try again')
+      input('\n[Please press ENTER to continue....]')
+    else: # returns chpice if nothing else is triggered
+      return iChoice   
         
+
 def AdminMenu():
 
     bRunning = True
