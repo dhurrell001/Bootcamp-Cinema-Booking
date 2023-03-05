@@ -12,12 +12,13 @@ class Screen:
 
     def __init__(self,name):
         self.name =name
-        self.seating = [[True for x in range(10)] for y in range(5)]
+        self.seating = [[True for x in range(10)] for y in range(5)] # creates an array of seats set at True fo available
         self.row = {'a':0,'b':1,'c':2,'d':3,'e':4}
         self.moviesShowing = [] # will take movie object
         self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
       
     def SeatAvailable(self,row,seat):
+        # Checks to see in seat has already been booked. True for available. False for booked
 
         if self.seating[self.row[row]][seat]== True:
             print('\nSeat Available')
@@ -319,6 +320,8 @@ def GetScreen():
             iChoice = int(input('Please enter a number for screen to view :'))
             return valid_screens[iChoice]
         except:
+            print('error here')
+            input()
             print('Please enter a valid number')
             time.sleep(0.5)
             iChoice = int(input('Please enter a number for screen to view :'))
@@ -358,6 +361,8 @@ def Continue():
             ClearScreen()
             print('\nThank you for using Cinema Booking'.center(60,'+'))
             return False
+        
+        
 def AdminMenu():
 
     bRunning = True
@@ -444,6 +449,8 @@ def MainMenu():
 
         if iChoice =='5':
             current_screen = GetScreen()
+            print('i am here')
+            input()
             current_screen.TimeMenu()
             input()
        
@@ -504,7 +511,7 @@ for x in Admin_details:
 input()
 members = OpenFiles('CinemaMembers')
 Standard_users = []
-Screens= OpenFiles('Movies')
+Screens= []#OpenFiles('Movies')
 
 
 
