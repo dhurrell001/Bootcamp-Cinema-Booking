@@ -19,6 +19,10 @@ class Screen:
         self.row = {'a':0,'b':1,'c':2,'d':3,'e':4}
         self.moviesShowing = [] # will take movie object
         self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
+        self.cinema_prices = {'Standard Adult':12,'Standard Child':8,'Standard Senior':10
+                            ,'Premium Adult':18,'Premium Child':12,'Premium Senior':14
+                            ,'Loyalty Discount Adult':8,'Loyalty Discount Child':4
+                            ,'Loyalty Discount Senior':4}
       
     def SeatAvailable(self,row,seat):
         # Checks to see in seat has already been booked. True for available. False for booked
@@ -118,6 +122,7 @@ class Booking(Member,Screen):
         self.tickets = 0
         self.seats = []
         self.current_screen = 0
+        self.ticket_price = 0
 
     def GetMember(self):
 
@@ -165,6 +170,19 @@ class Booking(Member,Screen):
     def GetBookingDate(self):
         self.date = datetime.datetime.now()
 
+    def GetTicketPrice(self):
+
+        age_dictionary = {1:'Adult',2:'Child', 3:'Senior'}
+        quality_dictionary = {1:'Standard',2:'Premium',3:'Loyalty Discount'}
+
+        menu_list_age = ['============== TICKET TYPE =======\n','Adult','Child','Senior']
+        ticket_type = DynamicMenu(menu_list_age)
+        
+        menu_list_quality = ['============== TICKET QUALITY ==========\n','Standard','Premium','Loyalty discount']
+        ticket_quality =DynamicMenu(menu_list_quality)
+        ticket = f'{quality_dictionary[ticket_quality]} {age_dictionary[ticket_type]}'
+        self.ticket_price = self.current_screen.cinema_prices[ticket]
+
     def PrintTicket(self):
 
         print('========== TICKET ==========')
@@ -173,6 +191,7 @@ class Booking(Member,Screen):
         print(f'Movie : {self.movie}')
         print(f'Seats : {self.seats}')
         print(f'Viewing time : {self.time}')
+        print(f'Ticket Price : {self.ticket_price}')
         print(f'Admit : {self.tickets}\n')
         print('============================')
 
@@ -364,6 +383,8 @@ def Continue():
             ClearScreen()
             print('\nThank you for using Cinema Booking'.center(60,'+'))
             return False
+        
+
 def DynamicMenu(list):
   # Takes menu options a list, error checks for integer input, return integer
   brunning = True # creates loop. exits loop when valid value is returned
@@ -467,6 +488,8 @@ def MainMenu():
             current_booking.GetTime()
             ClearScreen()
             current_booking.GetBookingDate()
+            ClearScreen()
+            current_booking.GetTicketPrice()
             current_booking.PrintTicket()          
             input()  
             
@@ -546,7 +569,7 @@ for x in Admin_details:
 input()
 members = OpenFiles('CinemaMembers')
 Standard_users = []
-Screens= []#OpenFiles('Movies')
+Screens= OpenFiles('Movies')
 
 
 
