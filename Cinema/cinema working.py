@@ -1,6 +1,10 @@
 import os
 import pickle
 import time
+import datetime
+
+class ValueOutOfRange(Exception): # creates child class of Exception
+  pass
 def ClearScreen():
     # Clearing the Screen
     os.system('cls')
@@ -11,12 +15,17 @@ class Screen:
 
     def __init__(self,name):
         self.name =name
-        self.seating = [[True for x in range(10)] for y in range(5)]
+        self.seating = [[True for x in range(10)] for y in range(5)] # creates an array of seats set at True fo available
         self.row = {'a':0,'b':1,'c':2,'d':3,'e':4}
         self.moviesShowing = [] # will take movie object
         self.times = {1:'10.30',2:'13.00',3:'16.00',4:'19.00'}
+        self.cinema_prices = {'Standard Adult':12,'Standard Child':8,'Standard Senior':10
+                            ,'Premium Adult':18,'Premium Child':12,'Premium Senior':14
+                            ,'Loyalty Discount Adult':8,'Loyalty Discount Child':4
+                            ,'Loyalty Discount Senior':4}
       
     def SeatAvailable(self,row,seat):
+        # Checks to see in seat has already been booked. True for available. False for booked
 
         if self.seating[self.row[row]][seat]== True:
             print('\nSeat Available')
@@ -108,10 +117,13 @@ class Booking(Member,Screen):
         self.name = ""
         self.surname = ""
         self.movie = ""
-        self.time = ""
+        self.time = ''
+        self.date = None
         self.tickets = 0
         self.seats = []
         self.current_screen = 0
+        self.ticket_price = []
+        self.ticket_total = 0
 
     def GetMember(self):
 
@@ -133,6 +145,7 @@ class Booking(Member,Screen):
         ClearScreen()  
         try:       
             ticket_amount = int(input('\nHow many tickets would you like : '))
+            ClearScreen()
         except:
             print('Please enter a valid number')
             time.sleep(0.5)
@@ -144,8 +157,9 @@ class Booking(Member,Screen):
             row ,seat= SeatingMenu(self.current_screen)
             #current_member.AssignSeats(row,seat)  
             self.seats.append((row.upper(),seat))
-            input()
+            
             ClearScreen()
+        return ticket_amount # amount of tickets to be used in price calculation 
 
     def GetMovie(self):
 
@@ -156,15 +170,43 @@ class Booking(Member,Screen):
     def GetTime(self):
         self.time = self.current_screen.TimeMenu()
 
+    def GetBookingDate(self):
+        self.date = datetime.datetime.now()
+
+    def GetTicketPrice(self,ticket_amount):
+
+        age_dictionary = {1:'Adult',2:'Child', 3:'Senior'}
+        quality_dictionary = {1:'Standard',2:'Premium',3:'Loyalty Discount'}
+
+        for num_of_tickets in range(ticket_amount):
+            
+            menu_list_age = ['============== TICKET TYPE =======\n','Adult','Child','Senior']
+            ticket_type = DynamicMenu(menu_list_age)
+            
+            menu_list_quality = ['============== TICKET QUALITY ==========\n','Standard','Premium','Loyalty discount']
+            ticket_quality =DynamicMenu(menu_list_quality)
+
+            # Create a string to access ticket price dictionary in Screen class/object
+            ticket = f'{quality_dictionary[ticket_quality]} {age_dictionary[ticket_type]}'
+
+            # Add ticket to current booking ticket list
+
+            self.ticket_price.append (f'{ticket} : £ {self.current_screen.cinema_prices[ticket]}')
+            # Add ticket value to ticket price total, get price from Screen class price dictionary
+            self.ticket_total += self.current_screen.cinema_prices[ticket]
 
     def PrintTicket(self):
 
+        
         print('========== TICKET ==========')
-        print(f'\n Name : {self.name} {self.surname}')
+        print(f'\nName : {self.name} {self.surname}')
+        print(f'Date Booked : {self.date}')
         print(f'Movie : {self.movie}')
         print(f'Seats : {self.seats}')
         print(f'Viewing time : {self.time}')
-        print(f'Admit : {self.tickets}\n')
+        print(f'Ticket Price : {self.ticket_price}')
+        print(f'Total Cost : £ {self.ticket_total}')
+        print(f'Admit : {self.tickets}')
         print('============================')
 
 #===================  Login Functions =============================
@@ -312,8 +354,11 @@ def GetScreen():
                 print(f'{i} : {screen.name}')
 
             iChoice = int(input('Please enter a number for screen to view :'))
+            ClearScreen()
             return valid_screens[iChoice]
         except:
+            print('error here')
+            input()
             print('Please enter a valid number')
             time.sleep(0.5)
             iChoice = int(input('Please enter a number for screen to view :'))
@@ -353,6 +398,42 @@ def Continue():
             ClearScreen()
             print('\nThank you for using Cinema Booking'.center(60,'+'))
             return False
+        
+
+def DynamicMenu(list):
+  # Takes menu options a list, error checks for integer input, return integer
+  brunning = True # creates loop. exits loop when valid value is returned
+  
+  while brunning:
+    
+    ClearScreen()
+    print(list[0])
+    
+    try:
+      for num in range(1,len(list)): # uses range to index over each item of list
+        print(f'{num} : {list[num]}')
+      
+      iChoice = int(input('\nPlease select an option : \n'))
+      
+      if iChoice > len(list)-1 or iChoice < 1: # create conditoion to trigger custom exception
+        raise ValueOutOfRange
+        
+    except ValueOutOfRange: # triggers error if input is not within menu options (IndexError)
+      print(f'Please enter a number between 1 and {len(list)-1}')
+      input('\n[Please press ENTER to continue....]')
+      
+    except ValueError: # Triggers value error i.e letter entered instead of number
+      print(f'Whoops ... Please enter a whole number between 1 and {len(list)-1}')
+      input('\n[Please press ENTER to continue....]')
+      continue
+
+    except: # General exception if above exceptions are not triggered
+      print('Unknown Error. Please try again')
+      input('\n[Please press ENTER to continue....]')
+    else: # returns chpice if nothing else is triggered
+      return iChoice   
+        
+
 def AdminMenu():
 
     bRunning = True
@@ -409,7 +490,6 @@ def MainMenu():
         if iChoice =='1':
 
             AdminMenu()
-
         if iChoice =='2':
             ClearScreen()
             # Assign Variables for this booking
@@ -418,10 +498,15 @@ def MainMenu():
             ClearScreen()
             current_booking.GetMovie()
             ClearScreen()
-            current_booking.GetSeats()
+            ticket_amount  = current_booking.GetSeats()
+            print(ticket_amount)
+            input()
             ClearScreen()
             current_booking.GetTime()
             ClearScreen()
+            current_booking.GetBookingDate()
+            ClearScreen()
+            current_booking.GetTicketPrice(ticket_amount)
             current_booking.PrintTicket()          
             input()  
             
@@ -439,6 +524,8 @@ def MainMenu():
 
         if iChoice =='5':
             current_screen = GetScreen()
+            print('i am here')
+            input()
             current_screen.TimeMenu()
             input()
        
