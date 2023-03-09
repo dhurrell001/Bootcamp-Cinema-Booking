@@ -122,7 +122,8 @@ class Booking(Member,Screen):
         self.tickets = 0
         self.seats = []
         self.current_screen = 0
-        self.ticket_price = 0
+        self.ticket_price = []
+        self.ticket_total = 0
 
     def GetMember(self):
 
@@ -144,6 +145,7 @@ class Booking(Member,Screen):
         ClearScreen()  
         try:       
             ticket_amount = int(input('\nHow many tickets would you like : '))
+            ClearScreen()
         except:
             print('Please enter a valid number')
             time.sleep(0.5)
@@ -155,8 +157,9 @@ class Booking(Member,Screen):
             row ,seat= SeatingMenu(self.current_screen)
             #current_member.AssignSeats(row,seat)  
             self.seats.append((row.upper(),seat))
-            input()
+            
             ClearScreen()
+        return ticket_amount # amount of tickets to be used in price calculation 
 
     def GetMovie(self):
 
@@ -170,21 +173,31 @@ class Booking(Member,Screen):
     def GetBookingDate(self):
         self.date = datetime.datetime.now()
 
-    def GetTicketPrice(self):
+    def GetTicketPrice(self,ticket_amount):
 
         age_dictionary = {1:'Adult',2:'Child', 3:'Senior'}
         quality_dictionary = {1:'Standard',2:'Premium',3:'Loyalty Discount'}
 
-        menu_list_age = ['============== TICKET TYPE =======\n','Adult','Child','Senior']
-        ticket_type = DynamicMenu(menu_list_age)
-        
-        menu_list_quality = ['============== TICKET QUALITY ==========\n','Standard','Premium','Loyalty discount']
-        ticket_quality =DynamicMenu(menu_list_quality)
-        ticket = f'{quality_dictionary[ticket_quality]} {age_dictionary[ticket_type]}'
-        self.ticket_price = self.current_screen.cinema_prices[ticket]
+        for num_of_tickets in range(ticket_amount):
+            
+            menu_list_age = ['============== TICKET TYPE =======\n','Adult','Child','Senior']
+            ticket_type = DynamicMenu(menu_list_age)
+            
+            menu_list_quality = ['============== TICKET QUALITY ==========\n','Standard','Premium','Loyalty discount']
+            ticket_quality =DynamicMenu(menu_list_quality)
+
+            # Create a string to access ticket price dictionary in Screen class/object
+            ticket = f'{quality_dictionary[ticket_quality]} {age_dictionary[ticket_type]}'
+
+            # Add ticket to current booking ticket list
+
+            self.ticket_price.append (f'{ticket} : £ {self.current_screen.cinema_prices[ticket]}')
+            # Add ticket value to ticket price total, get price from Screen class price dictionary
+            self.ticket_total += self.current_screen.cinema_prices[ticket]
 
     def PrintTicket(self):
 
+        
         print('========== TICKET ==========')
         print(f'\nName : {self.name} {self.surname}')
         print(f'Date Booked : {self.date}')
@@ -192,7 +205,8 @@ class Booking(Member,Screen):
         print(f'Seats : {self.seats}')
         print(f'Viewing time : {self.time}')
         print(f'Ticket Price : {self.ticket_price}')
-        print(f'Admit : {self.tickets}\n')
+        print(f'Total Cost : £ {self.ticket_total}')
+        print(f'Admit : {self.tickets}')
         print('============================')
 
 #===================  Login Functions =============================
@@ -340,6 +354,7 @@ def GetScreen():
                 print(f'{i} : {screen.name}')
 
             iChoice = int(input('Please enter a number for screen to view :'))
+            ClearScreen()
             return valid_screens[iChoice]
         except:
             print('error here')
@@ -483,13 +498,15 @@ def MainMenu():
             ClearScreen()
             current_booking.GetMovie()
             ClearScreen()
-            current_booking.GetSeats()
+            ticket_amount  = current_booking.GetSeats()
+            print(ticket_amount)
+            input()
             ClearScreen()
             current_booking.GetTime()
             ClearScreen()
             current_booking.GetBookingDate()
             ClearScreen()
-            current_booking.GetTicketPrice()
+            current_booking.GetTicketPrice(ticket_amount)
             current_booking.PrintTicket()          
             input()  
             
