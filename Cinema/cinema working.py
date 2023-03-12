@@ -117,6 +117,7 @@ class Booking(Member,Screen):
 
         self.name = ""
         self.surname = ""
+        self.current_member = ''
         self.movie = ""
         self.time = ''
         self.date = None
@@ -133,7 +134,7 @@ class Booking(Member,Screen):
         
         for guest in members:
             if guest.name == name and guest.surname == surname:
-                current_member = guest
+                self.current_member = guest
                 print('\nMember Found..')
                 time.sleep(1)
 
@@ -197,6 +198,10 @@ class Booking(Member,Screen):
             self.ticket_price.append (f'{ticket} : £ {self.current_screen.cinema_prices[ticket]}')
             # Add ticket value to ticket price total, get price from Screen class price dictionary
             self.ticket_total += self.current_screen.cinema_prices[ticket]
+
+    def AwardLoyayltyPoint(self):
+
+        self.current_member.loyalty += 1
 
     def PrintTicket(self):
 
