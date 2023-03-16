@@ -140,6 +140,11 @@ class Booking(Member,Screen):
 
                 self.name = name
                 self.surname = surname
+            
+            else:
+                print('Member not found...\nPlease login in as administartor to create new member ')
+                input()
+                CreateMember()
 
         # If member not stored, add option to add new member
 
@@ -295,8 +300,8 @@ def Check_If_Admin():
     #Checks through list of admin class objects (Admin_Detail) and return true if
     # admin account exists. else false
 
-    Username = input('Please enter your admin username :\n ')
-    Password = input('Please enter your password :\n ')
+    Username = input('Please enter your admin username :\n')
+    Password = input('Please enter your password :\n')
 
     for user in Admin_details:
         if user.username == Username and user.password == Password:
