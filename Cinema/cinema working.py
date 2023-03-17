@@ -172,7 +172,7 @@ class Booking(Member,Screen):
         for x in range(ticket_amount):
             row ,seat= SeatingMenu(self.current_screen)
             #current_member.AssignSeats(row,seat)  
-            self.seats.append((row.upper(),seat))
+            self.seats.append(f'{row.upper()} : {seat}')
             
             ClearScreen()
         return ticket_amount # amount of tickets to be used in price calculation 
@@ -222,9 +222,9 @@ class Booking(Member,Screen):
         print(f'\nName : {self.name} {self.surname}')
         print(f'Date Booked : {self.date}')
         print(f'Movie : {self.movie}')
-        print(f'Seats : {self.seats}')
+        print(f'Seats : {" -- ".join(self.seats)}')
         print(f'Viewing time : {self.time}')
-        print(f'Ticket Price : {" - -".join(self.ticket_price)}')
+        print(f'Ticket Price : {" -- ".join(self.ticket_price)}')
         print(f'Total Cost : £ {self.ticket_total}')
         print(f'Admit : {self.tickets}')
         print('============================')
