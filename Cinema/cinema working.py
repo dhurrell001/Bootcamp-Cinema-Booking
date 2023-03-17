@@ -5,6 +5,7 @@ import datetime
 
 class ValueOutOfRange(Exception): # creates child class of Exception
   pass
+
 def ClearScreen():
     # Clearing the Screen
     os.system('cls')
@@ -116,6 +117,7 @@ class Booking(Member,Screen):
 
         self.name = ""
         self.surname = ""
+        self.current_member = ''
         self.movie = ""
         self.time = ''
         self.date = None
@@ -132,12 +134,26 @@ class Booking(Member,Screen):
         
         for guest in members:
             if guest.name == name and guest.surname == surname:
-                current_member = guest
+                self.current_member = guest
                 print('\nMember Found..')
-                input()
+                time.sleep(1)
 
                 self.name = name
                 self.surname = surname
+            
+            else:
+                choice = input('Member not found..Would you like to create a new member Y\\N ? :\n')
+                if choice.lower() == 'y':
+                    print('Please login in as administartor to create new member ')
+                    input()
+                    CreateMember()
+                elif choice.lower() == 'n':
+                    self.name = name
+                    self.surname = surname
+                    break
+
+
+        # If member not stored, add option to add new member
 
     def GetSeats(self):
 
@@ -156,7 +172,7 @@ class Booking(Member,Screen):
         for x in range(ticket_amount):
             row ,seat= SeatingMenu(self.current_screen)
             #current_member.AssignSeats(row,seat)  
-            self.seats.append((row.upper(),seat))
+            self.seats.append(f'{row.upper()} : {seat}')
             
             ClearScreen()
         return ticket_amount # amount of tickets to be used in price calculation 
@@ -179,7 +195,7 @@ class Booking(Member,Screen):
         quality_dictionary = {1:'Standard',2:'Premium',3:'Loyalty Discount'}
 
         for num_of_tickets in range(ticket_amount):
-            
+
             menu_list_age = ['============== TICKET TYPE =======\n','Adult','Child','Senior']
             ticket_type = DynamicMenu(menu_list_age)
             
@@ -195,6 +211,10 @@ class Booking(Member,Screen):
             # Add ticket value to ticket price total, get price from Screen class price dictionary
             self.ticket_total += self.current_screen.cinema_prices[ticket]
 
+    def AwardLoyayltyPoint(self):
+
+        self.current_member.loyalty += 1
+
     def PrintTicket(self):
 
         
@@ -202,9 +222,9 @@ class Booking(Member,Screen):
         print(f'\nName : {self.name} {self.surname}')
         print(f'Date Booked : {self.date}')
         print(f'Movie : {self.movie}')
-        print(f'Seats : {self.seats}')
+        print(f'Seats : {" -- ".join(self.seats)}')
         print(f'Viewing time : {self.time}')
-        print(f'Ticket Price : {self.ticket_price}')
+        print(f'Ticket Price : {" -- ".join(self.ticket_price)}')
         print(f'Total Cost : £ {self.ticket_total}')
         print(f'Admit : {self.tickets}')
         print('============================')
@@ -287,13 +307,14 @@ def Check_If_Admin():
     #Checks through list of admin class objects (Admin_Detail) and return true if
     # admin account exists. else false
 
-    Username = input('Please enter your admin username :\n ')
-    Password = input('Please enter your password :\n ')
+    Username = input('Please enter your admin username :\n')
+    Password = input('Please enter your password :\n')
 
     for user in Admin_details:
         if user.username == Username and user.password == Password:
             return True
     print ('Sorry, You do not have admin privilages')
+    input()
     return False
 
 def CreateMember():
@@ -364,24 +385,6 @@ def GetScreen():
             iChoice = int(input('Please enter a number for screen to view :'))
 
 
-                
-"""
-def GetScreen():
-    #Prints list of existing saved screens. compares user input to screen.name in Saved screen list
-    #return screen object
-    bRunning = True
-    while bRunning:
-        print('=============== AVAILABLE SCREENS ===============\n')
-        for x in Screens:
-            print(x.name)
-        screen_choice = input('\nPlease enter the name of screen you would like to access : \n')
-        for screen in Screens:
-            if screen.name == screen_choice:
-                return screen
-        else:
-            print('Screen name not found')
-            input()
-            continue"""
 
 #=====================  Menu Functions ================================
 
@@ -484,7 +487,7 @@ def MainMenu():
         print('\n1) Administration Menu   2) Book Tickets')
         print('3) Save Details  4)View screen movies ' )
         
-        print('5) View movie times 6) Exit Program')
+        print('5) Exit Program')
         iChoice = input('\nPlease select an option : \n')
 
         if iChoice =='1':
@@ -499,8 +502,7 @@ def MainMenu():
             current_booking.GetMovie()
             ClearScreen()
             ticket_amount  = current_booking.GetSeats()
-            print(ticket_amount)
-            input()
+            
             ClearScreen()
             current_booking.GetTime()
             ClearScreen()
@@ -523,11 +525,7 @@ def MainMenu():
             input()
 
         if iChoice =='5':
-            current_screen = GetScreen()
-            print('i am here')
-            input()
-            current_screen.TimeMenu()
-            input()
+            break
        
 
 def SeatingMenu(screen_name):
