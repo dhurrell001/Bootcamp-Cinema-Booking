@@ -142,9 +142,16 @@ class Booking(Member,Screen):
                 self.surname = surname
             
             else:
-                print('Member not found...\nPlease login in as administartor to create new member ')
-                input()
-                CreateMember()
+                choice = input('Member not found..Would you like to create a new member Y\\N ? :\n')
+                if choice.lower() == 'y':
+                    print('Please login in as administartor to create new member ')
+                    input()
+                    CreateMember()
+                elif choice.lower() == 'n':
+                    self.name = name
+                    self.surname = surname
+                    break
+
 
         # If member not stored, add option to add new member
 
@@ -217,7 +224,7 @@ class Booking(Member,Screen):
         print(f'Movie : {self.movie}')
         print(f'Seats : {self.seats}')
         print(f'Viewing time : {self.time}')
-        print(f'Ticket Price : {self.ticket_price}')
+        print(f'Ticket Price : {" - -".join(self.ticket_price)}')
         print(f'Total Cost : £ {self.ticket_total}')
         print(f'Admit : {self.tickets}')
         print('============================')
